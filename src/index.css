@@ -1,0 +1,118 @@
+@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400&family=Crimson+Pro:ital,wght@0,400;0,600;1,400&family=JetBrains+Mono:wght@400;700&display=swap');
+@import "tailwindcss";
+
+@theme {
+  --font-serif: "Cormorant Garamond", ui-serif, Georgia, serif;
+  --font-sans: "Crimson Pro", ui-serif, Georgia, serif;
+  --font-mono: "JetBrains Mono", ui-monospace, SFMono-Regular, monospace;
+}
+
+body {
+  background-color: #050907;
+  background-image: 
+    linear-gradient(30deg, #0a120e 12%, transparent 12.5%, transparent 87%, #0a120e 87.5%, #0a120e),
+    linear-gradient(150deg, #0a120e 12%, transparent 12.5%, transparent 87%, #0a120e 87.5%, #0a120e),
+    linear-gradient(30deg, #0a120e 12%, transparent 12.5%, transparent 87%, #0a120e 87.5%, #0a120e),
+    linear-gradient(150deg, #0a120e 12%, transparent 12.5%, transparent 87%, #0a120e 87.5%, #0a120e),
+    linear-gradient(60deg, #0d1813 25%, transparent 25.5%, transparent 75%, #0d1813 75%, #0d1813),
+    linear-gradient(60deg, #0d1813 25%, transparent 25.5%, transparent 75%, #0d1813 75%, #0d1813);
+  background-size: 40px 70px;
+  background-position: 0 0, 0 0, 20px 35px, 20px 35px, 0 0, 20px 35px;
+  color: #e2e8f0;
+}
+
+.glass-panel {
+  background: rgba(13, 22, 17, 0.85);
+  backdrop-filter: blur(12px);
+  border: 1px solid rgba(212, 175, 55, 0.15);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+}
+
+.gold-gradient-text {
+  background: linear-gradient(to right, #bf953f, #fcf6ba, #b38728, #fbf5b7, #aa771c);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+/* Custom Scrollbar */
+.custom-scrollbar::-webkit-scrollbar {
+  width: 8px;
+}
+.custom-scrollbar::-webkit-scrollbar-track {
+  background: rgba(0, 0, 0, 0.2);
+}
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  background: rgba(212, 175, 55, 0.3);
+  border-radius: 4px;
+}
+.custom-scrollbar::-webkit-scrollbar-thumb:hover {
+  background: rgba(212, 175, 55, 0.5);
+}
+
+/* Markdown styling for dark theme */
+.markdown-body {
+  font-family: "Crimson Pro", serif;
+  font-size: 1.125rem;
+  line-height: 1.7;
+}
+.markdown-body h1, .markdown-body h2, .markdown-body h3 {
+  font-family: "Cormorant Garamond", serif;
+  color: #d4af37;
+  border-bottom: 1px solid rgba(212, 175, 55, 0.2);
+  margin-top: 1.5em;
+  margin-bottom: 0.5em;
+  font-weight: 600;
+}
+.markdown-body h2 {
+  font-size: 1.75em;
+  padding-bottom: 0.3em;
+}
+.markdown-body h3 {
+  font-size: 1.5em;
+}
+.markdown-body p {
+  margin-top: 0;
+  margin-bottom: 1em;
+}
+.markdown-body ul, .markdown-body ol {
+  margin-top: 0;
+  margin-bottom: 1em;
+  padding-left: 2em;
+}
+.markdown-body li {
+  margin-bottom: 0.25em;
+}
+.markdown-body pre {
+  background-color: #020403;
+  border: 1px solid #065f46;
+  border-radius: 0.25rem;
+  padding: 1em;
+  overflow: auto;
+  margin-bottom: 1em;
+  color: #34d399;
+}
+.markdown-body code {
+  font-family: "JetBrains Mono", monospace;
+  font-size: 0.85em;
+  color: #fbbf24;
+}
+.markdown-body pre code {
+  background-color: transparent;
+  padding: 0;
+  border: 0;
+  color: inherit;
+}
+.markdown-body blockquote {
+  margin: 0 0 1em 0;
+  padding: 0.5em 1em;
+  color: #94a3b8;
+  border-left: 0.25em solid #d4af37;
+  background: rgba(212, 175, 55, 0.05);
+}
+.markdown-body strong {
+  font-weight: 600;
+  color: #f3f4f6;
+}
+
+

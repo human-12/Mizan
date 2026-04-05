@@ -1,0 +1,92 @@
+rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // ===============================================================
+    // Assumed Data Model
+    // ===============================================================
+    //
+    // Collection: fatwas
+    // Document ID: auto-generated
+    // Fields:
+    //   - asset: string (required) - The name or contract address of the asset.
+    //   - ruling: string (required) - The final approved ruling (Halal, Haram, Doubtful).
+    //   - evidence: list (optional) - List of evidence sources and citations.
+    //   - qiyas: string (optional) - Analogical reasoning explanation.
+    //   - date_approved: string (required) - The date the fatwa was approved.
+    //   - scholar_notes: string (optional) - Additional notes from the scholar.
+    //   - madhhab: string (optional) - The madhhab used for the analysis.
+    //   - rulingStrength: string (optional) - Qaṭ‘ī, Ẓann Ghālib, Ijtihādī, or Weak.
+    //   - rulingScore: number (optional) - Internal score from 0 to 100.
+    //   - illahIdentified: string (optional) - The effective cause identified.
+    //   - tahqiqAlManat: string (optional) - Reality check on the protocol.
+    //   - dalilNarrative: string (optional) - A fatwa-style proof narrative.
+    //   - dalilStack: list (optional) - The stack of evidence used.
+    //   - contraryView: string (optional) - Contrary dalil considered and why it was rejected.
+    //   - scholarId: string (required) - The UID of the scholar who approved the fatwa.
+    //
+    // ===============================================================
+
+    // ===============================================================
+    // Helper Functions
+    // ===============================================================
+    
+    function isAuthenticated() {
+      return request.auth != null;
+    }
+    
+    function isOwner(userId) {
+      return isAuthenticated() && request.auth.uid == userId;
+    }
+    
+    function hasRequiredFields(fields) {
+      return request.resource.data.keys().hasAll(fields);
+    }
+    
+    function isValidString(field, minLen, maxLen) {
+      return request.resource.data[field] is string &&
+        request.resource.data[field].size() >= minLen &&
+        request.resource.data[field].size() <= maxLen;
+    }
+    
+    function isValidOptionalString(field, minLen, maxLen) {
+      return !('field' in request.resource.data) ||
+             (request.resource.data[field] is string &&
+              request.resource.data[field].size() >= minLen &&
+              request.resource.data[field].size() <= maxLen);
+    }
+    
+    function isValidList(listField, maxSize) {
+      return !('field' in request.resource.data) || 
+             (request.resource.data[listField] is list && request.resource.data[listField].size() <= maxSize);
+    }
+
+    function isValidFatwa() {
+      return hasRequiredFields(['asset', 'ruling', 'date_approved', 'scholarId']) &&
+             isValidString('asset', 1, 200) &&
+             isValidString('ruling', 1, 50) &&
+             isValidString('date_approved', 10, 30) &&
+             request.resource.data.scholarId == request.auth.uid &&
+             isValidOptionalString('rulingStrength', 0, 100) &&
+             (!('rulingScore' in request.resource.data) || (request.resource.data.rulingScore is number && request.resource.data.rulingScore >= 0 && request.resource.data.rulingScore <= 100)) &&
+             isValidOptionalString('illahIdentified', 0, 10000) &&
+             isValidOptionalString('tahqiqAlManat', 0, 10000) &&
+             isValidOptionalString('dalilNarrative', 0, 20000) &&
+             isValidOptionalString('contraryView', 0, 10000) &&
+             isValidOptionalString('scholar_notes', 0, 10000) &&
+             (!('dalilStack' in request.resource.data) || (request.resource.data.dalilStack is list && request.resource.data.dalilStack.size() <= 100)) &&
+             (!('aaoifi_evidence' in request.resource.data) || (request.resource.data.aaoifi_evidence is list && request.resource.data.aaoifi_evidence.size() <= 100)) &&
+             (!('riskMetrics' in request.resource.data) || (request.resource.data.riskMetrics is map)) &&
+             (!('areasNeedingReview' in request.resource.data) || (request.resource.data.areasNeedingReview is list && request.resource.data.areasNeedingReview.size() <= 100)) &&
+             (!('knowledge_graph' in request.resource.data) || (request.resource.data.knowledge_graph is map)) &&
+             (!('xai_explanations' in request.resource.data) || (request.resource.data.xai_explanations is list && request.resource.data.xai_explanations.size() <= 100));
+    }
+
+    match /fatwas/{fatwaId} {
+      allow read: if isAuthenticated();
+      allow create: if isAuthenticated() && isValidFatwa();
+      allow update: if isAuthenticated() && isOwner(resource.data.scholarId) && isValidFatwa() && request.resource.data.scholarId == resource.data.scholarId;
+      allow delete: if isAuthenticated() && isOwner(resource.data.scholarId);
+    }
+  }
+}
